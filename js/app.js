@@ -96,12 +96,12 @@ const pianoNotes = [
   { key: 9, src: "S5.wav" },
   { key: 20, src: "S6.wav" },
 ];
+
 const $ = document;
 const notesDirectory = "./notes/";
 
 for (let i = 0; i < pianoNotes.length; i++) {
   const audioElem = $.createElement("audio");
-  //   audioElem.setAttribute("controls" , "true");
   audioElem.id = pianoNotes[i].key;
   audioElem.src = notesDirectory + pianoNotes[i].src;
   document.body.append(audioElem);
@@ -109,16 +109,24 @@ for (let i = 0; i < pianoNotes.length; i++) {
 
 document.addEventListener("keydown", function (e) {
   e.preventDefault();
-  console.log(e.keyCode);
   const audios = $.getElementsByTagName("audio");
   pianoNotes.forEach(function (note) {
-    const selectedElement = $.getElementById(note.key);
-    if (e.keyCode == note.key) {
-      for (let i = 0; i < audios.length; i++) {
-        audios[i].pause();
-        audios[i].currentTime = 0;
+      const selectedElement = $.getElementById(note.key);
+      if (e.keyCode == note.key) {
+          for (let i = 0; i < audios.length; i++) {
+              audios[i].pause();
+              audios[i].currentTime = 0;
+          }
+          selectedElement.play();
+
+          // Add active class to the key
+          const keyElement = $.querySelector(`.key[data-key="${note.key}"]`);
+          keyElement.classList.add("active");
+
+          // Remove active class after 200ms
+          setTimeout(() => {
+              keyElement.classList.remove("active");
+          }, 200);
       }
-      selectedElement.play();
-    }
   });
 });
